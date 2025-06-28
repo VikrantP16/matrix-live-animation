@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sanskrit Matrix Digital Rain</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;700&display=swap');
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background: #000;
+            overflow: hidden;
+            font-family: 'Noto Sans Devanagari', monospace;
+        }
+        
+        canvas {
+            display: block;
+            background: #000;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="matrix"></canvas>
+    
+    <script>
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+        
+        // Set canvas size to full screen
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        
+        // Sanskrit characters (Devanagari script)
+        const sanskritChars = [
+            // Vowels
+            'अ', 'आ', 'इ', 'ई', 'उ', 'ऊ', 'ऋ', 'ॠ', 'ऌ', 'ॡ', 'ए', 'ऐ', 'ओ', 'औ',
+            // Consonants
+            'क', 'ख', 'ग', 'घ', 'ङ', 'च', 'छ', 'ज', 'झ', 'ञ', 'ट', 'ठ', 'ड', 'ढ', 'ण',
+            'त', 'थ', 'द', 'ध', 'न', 'प', 'फ', 'ब', 'भ', 'म', 'य', 'र', 'ल', 'व',
+            'श', 'ष', 'स', 'ह', 'क्ष', 'त्र', 'ज्ञ',
+            // Numbers in Devanagari
+            '०', '१', '२', '३', '४', '५', '६', '७', '८', '९',
+            // Additional characters
+            'ॐ', 'ऽ', 'ं', 'ः', '्', 'ा', 'ि', 'ी', 'ु', 'ू', 'ृ', 'ॄ', 'ॢ', 'ॣ',
+            'े', 'ै', 'ो', 'ौ', '्', '़', '।', '॥'
+        ];
+        
+        const fontSize = 14;
+        const columns = Math.floor(canvas.width / fontSize);
+        
+        // Array to store the y position of each column
+        const drops = new Array(columns).fill(1);
+        
+        function draw() {
+            // Black background with slight transparency for trailing effect
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Set font and text color
+            ctx.font = fontSize + 'px Noto Sans Devanagari';
+            
+            for (let i = 0; i < drops.length; i++) {
+                // Random Sanskrit character
+                const char = sanskritChars[Math.floor(Math.random() * sanskritChars.length)];
+                
+                // Different shades of green for depth effect
+                const brightness = Math.random();
+                if (brightness > 0.8) {
+                    ctx.fillStyle = '#ffffff'; // Bright white for highlights
+                } else if (brightness > 0.6) {
+                    ctx.fillStyle = '#00ff41'; // Bright green
+                } else if (brightness > 0.4) {
+                    ctx.fillStyle = '#00cc33'; // Medium green
+                } else if (brightness > 0.2) {
+                    ctx.fillStyle = '#009926'; // Dark green
+                } else {
+                    ctx.fillStyle = '#006619'; // Very dark green
+                }
+                
+                // Draw the character
+                ctx.fillText(char, i * fontSize, drops[i] * fontSize);
+                
+                // Reset drop to top with some randomness
+                if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                    drops[i] = 0;
+                }
+                
+                // Move drop down
+                drops[i]++;
+            }
+        }
+        
+        // Animation loop
+        setInterval(draw, 50);
+        
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            const newColumns = Math.floor(canvas.width / fontSize);
+            drops.length = newColumns;
+            for (let i = 0; i < newColumns; i++) {
+                if (drops[i] === undefined) {
+                    drops[i] = Math.floor(Math.random() * canvas.height / fontSize);
+                }
+            }
+        });
+        
+        // Initialize drops with random positions
+        for (let i = 0; i < drops.length; i++) {
+            drops[i] = Math.floor(Math.random() * canvas.height / fontSize);
+        }
+    </script>
+</body>
+</html>
